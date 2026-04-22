@@ -52,7 +52,7 @@ export default async function CursoPage({ params }: { params: { id: string } }) 
         .select('leccion_id')
         .eq('usuario_id', user.id)
         .eq('completado', true)
-      progreso = prog?.map(p => p.leccion_id) || []
+      progreso = (prog as { leccion_id: string }[] | null)?.map(p => p.leccion_id) || []
     }
   }
 
