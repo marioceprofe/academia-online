@@ -16,20 +16,30 @@ export async function generateMetadata({ params }: { params: { id: string } }) {
 export default async function CursoPage({ params }: { params: { id: string } }) {
   const supabase = await createClient()
 
-  const { data: curso } = await supabase
+  const { data: cursoRaw } = await supabase
     .from('cursos')
     .select('*')
     .eq('id', params.id)
     .eq('publicado', true)
     .single()
 
+  const curso = cursoRaw as {
+    id: string; titulo: string; descripcion: string | null
+    plan_requerido: string; precio: number; publicado: boolean
+  } | null
+
   if (!curso) notFound()
 
-  const { data: lecciones } = await supabase
+  const { data: leccionesRaw } = await supabase
     .from('lecciones')
     .select('*')
     .eq('curso_id', params.id)
     .order('orden')
+
+  const lecciones = leccionesRaw as {
+    id: string; titulo: string; duracion_segundos: number | null
+    es_preview: boolean; video_url: string | null; orden: number
+  }[] | null
 
   const { data: { user } } = await supabase.auth.getUser()
 
