@@ -5,7 +5,8 @@ import TestEngine from '@/components/tests/TestEngine'
 export async function generateMetadata({ params }: { params: { id: string } }) {
   const supabase = await createClient()
   const { data } = await supabase.from('tests').select('titulo').eq('id', params.id).single()
-  return { title: data?.titulo || 'Test' }
+  const test = data as { titulo: string } | null
+  return { title: test?.titulo || 'Test' }
 }
 
 export default async function TestPage({ params }: { params: { id: string } }) {

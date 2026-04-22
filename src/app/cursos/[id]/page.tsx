@@ -8,19 +8,15 @@ import MatricularButton from '@/components/cursos/MatricularButton'
 
 export async function generateMetadata({ params }: { params: { id: string } }) {
   const supabase = await createClient()
-  const result: any = await supabase.from('cursos').select('titulo').eq('id', params.id).single()
-  
-  // Extraemos los datos de forma manual para que no haya duda
-  const titulo = result.data?.titulo || 'Curso'
-  
-  return { 
-    title: titulo 
-  }
+  const { data } = await supabase.from('cursos').select('titulo').eq('id', params.id).single()
+  const curso = data as { titulo: string } | null
+  return { title: curso?.titulo || 'Curso' }
 }
 
 export default async function CursoPage({ params }: { params: { id: string } }) {
+  const supabase = await createClient()
 
-  const { data: curso }: any = await supabase
+  const { data: curso } = await supabase
     .from('cursos')
     .select('*')
     .eq('id', params.id)
