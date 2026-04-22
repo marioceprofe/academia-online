@@ -8,11 +8,13 @@ import MatricularButton from '@/components/cursos/MatricularButton'
 
 export async function generateMetadata({ params }: { params: { id: string } }) {
   const supabase = await createClient()
-  // Usamos : any para que TypeScript no se queje durante la compilación de Vercel
-  const { data }: any = await supabase.from('cursos').select('titulo').eq('id', params.id).single()
+  const result: any = await supabase.from('cursos').select('titulo').eq('id', params.id).single()
+  
+  // Extraemos los datos de forma manual para que no haya duda
+  const titulo = result.data?.titulo || 'Curso'
   
   return { 
-    title: data?.titulo || 'Curso' 
+    title: titulo 
   }
 }
 
